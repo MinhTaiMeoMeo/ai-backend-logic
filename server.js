@@ -7,12 +7,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Khởi tạo Gemini với Key từ Environment Variable của Render
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 app.post("/chat", async (req, res) => {
     try {
         const userMessage = req.body.message;
-        // Sử dụng model chuẩn để tránh lỗi 404 như trong log cũ của bạn
+        
+        // Sử dụng model 'gemini-1.5-flash' - đây là tên model chuẩn nhất hiện tại
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const result = await model.generateContent(userMessage);
@@ -21,11 +23,10 @@ app.post("/chat", async (req, res) => {
 
         res.json({ reply: text });
     } catch (error) {
-        console.error("Lỗi:", error);
-        res.status(500).json({ error: "AI đang bận một chút, thử lại nhé!" });
+        console.error("Lỗi chi tiết:", error);
+        res.status(500).json({ error: "AI đang bận, bạn thử lại nhé!" });
     }
 });
 
-// Quan trọng: Phải ưu tiên process.env.PORT cho Render
-const PORT = process.env.PORT || 10000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server chạy tại cổng ${PORT}`));
