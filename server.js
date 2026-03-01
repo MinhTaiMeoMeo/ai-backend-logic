@@ -7,12 +7,13 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Khởi tạo Gemini
+// Kết nối với Gemini bằng Key lưu trên Render
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 app.post("/chat", async (req, res) => {
   try {
     const userMessage = req.body.message;
+    // Sử dụng model gemini-1.5-flash (nhanh và miễn phí)
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const result = await model.generateContent(userMessage);
