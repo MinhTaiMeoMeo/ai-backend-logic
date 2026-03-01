@@ -7,25 +7,26 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Kết nối với Gemini bằng Key lưu trên Render
+// Khởi tạo Gemini với Key từ Environment Variable của Render
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 app.post("/chat", async (req, res) => {
-  try {
-    const userMessage = req.body.message;
-    // Sử dụng model gemini-1.5-flash (nhanh và miễn phí)
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    try {
+        const userMessage = req.body.message;
+        
+        // Sử dụng model 'gemini-1.5-flash' - đây là tên model chuẩn nhất hiện tại
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-    const result = await model.generateContent(userMessage);
-    const response = await result.response;
-    const text = response.text();
+        const result = await model.generateContent(userMessage);
+        const response = await result.response;
+        const text = response.text();
 
-    res.json({ reply: text });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Lỗi kết nối Gemini rồi!" });
-  }
+        res.json({ reply: text });
+    } catch (error) {
+        console.error("Lỗi chi tiết:", error);
+        res.status(500).json({ error: "AI đang bận, bạn thử lại nhé!" });
+    }
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server chạy tại cổng ${PORT}`));
