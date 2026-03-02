@@ -5,7 +5,7 @@ const Groq = require("groq-sdk");
 
 const app = express();
 app.use(cors({ origin: '*' }));
-app.use(express.json({ limit: '20mb' })); // Tăng giới hạn để nhận ảnh Base64
+app.use(express.json({ limit: '5mb' })); // Tăng giới hạn để nhận ảnh Base64
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
@@ -34,7 +34,7 @@ app.post("/chat", async (req, res) => {
 
         const completion = await groq.chat.completions.create({
             messages: messages,
-            model: image ? "llama-3.2-11b-vision-preview" : "openai/gpt-oss-120b",
+            model: image ? "llama-3.2-90b-vision-preview" : "openai/gpt-oss-120b",
             temperature: 0.5,
         });
 
@@ -47,3 +47,4 @@ app.post("/chat", async (req, res) => {
 
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Server Hybrid Vision Live tại ${PORT}`));
+
